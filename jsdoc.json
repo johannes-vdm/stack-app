@@ -1,0 +1,16 @@
+{
+  "source": {
+    "include": [
+      "."
+    ],
+    "includePattern": ".(jsx|js|ts|tsx)$"
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": [
+      "jsdoc",
+      "closure"
+    ]
+  }
+}
