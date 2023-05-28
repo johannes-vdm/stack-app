@@ -78,38 +78,32 @@ function App() {
   }, [followedUsers, blockedUsers]);
 
   const toggleFollowUser = (userId: string) => {
-    if (userId === clickedProfileId) {
-      setClickedProfileId(null);
-    } else {
-      setFollowedUsers((prevFollowedUsers) => {
-        if (prevFollowedUsers.includes(userId)) {
-          return prevFollowedUsers.filter((id) => id !== userId);
-        } else {
-          return [...prevFollowedUsers, userId];
-        }
-      });
+    setFollowedUsers((prevFollowedUsers) => {
+      if (prevFollowedUsers.includes(userId)) {
+        return prevFollowedUsers.filter((id) => id !== userId);
+      } else {
+        return [...prevFollowedUsers, userId];
+      }
+    });
+
+    if (clickedProfileId !== userId) {
       setClickedProfileId(userId);
     }
   };
 
   const toggleBlockUser = (userId: string) => {
-    if (userId === clickedProfileId) {
-      setClickedProfileId(null);
-    } else {
-      setBlockedUsers((prevBlockedUsers) => {
-        if (prevBlockedUsers.includes(userId)) {
-          setFollowedUsers((prevFollowedUsers) =>
-            prevFollowedUsers.filter((id) => id !== userId)
-          );
-          return prevBlockedUsers.filter((id) => id !== userId);
-        } else {
-          setFollowedUsers((prevFollowedUsers) =>
-            prevFollowedUsers.filter((id) => id !== userId)
-          );
-          return [...prevBlockedUsers, userId];
-        }
-      });
+    setBlockedUsers((prevBlockedUsers) => {
+      if (prevBlockedUsers.includes(userId)) {
+        return prevBlockedUsers.filter((id) => id !== userId);
+      } else {
+        return [...prevBlockedUsers, userId];
+      }
+    });
+
+    if (clickedProfileId !== userId) {
       setClickedProfileId(userId);
+    } else {
+      setClickedProfileId(null);
     }
   };
 
@@ -154,7 +148,7 @@ function App() {
           />
           {filteredUsers.length ? (
             <div>
-              <ul role="list" className="divide-y divide-gray-100 ">
+              <ul role="list" className="divide-y divide-gray-100 border-2 rounded-lg">
                 {usersToShow.map((user: User) => (
                   <>
                     <li
@@ -163,8 +157,9 @@ function App() {
                         user.user_id
                       )
                         ? 'bg-gray-200 opacity-50'
-                        : 'bg-white'}`}
-                      onClick={() => {
+                        : 'bg-transparent'}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
                         if (clickedProfileId === user.user_id) {
                           setClickedProfileId(null);
                         } else {
@@ -202,7 +197,6 @@ function App() {
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
                           </svg>
-
                           :
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -212,43 +206,32 @@ function App() {
 
                       </div>
                     </li>
-                    {clickedProfileId === user.user_id && !blockedUsers.includes(user.user_id) && (
-                      <li className='p-10 bg-red-100'>
+                    {clickedProfileId === user.user_id && (
+                      <div className='p-10 bg-gray-500' key={`details-${user.user_id}`}>
+                        {!blockedUsers.includes(user.user_id) && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleFollowUser(user.user_id);
+                            }}
+                            className={`px-2 py-1 text-sm rounded ${followedUsers.includes(user.user_id)
+                              ? 'bg-blue-500 text-white'
+                              : 'bg-gray-500 text-white'}`}
+                          >
+                            {followedUsers.includes(user.user_id) ? 'Unfollow' : 'Follow'}
+                          </button>
+                        )}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleFollowUser(user.user_id);
+                            toggleBlockUser(user.user_id);
                           }}
-                          className={`px-2 py-1 text-sm rounded ${followedUsers.includes(
-                            user.user_id
-                          )
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-500 text-white'}`}
+                          className="px-2 py-1 text-sm bg-red-500 text-white rounded"
                         >
-                          {followedUsers.includes(user.user_id) ? 'Unfollow' : 'Follow'}
+                          {blockedUsers.includes(user.user_id) ? 'Unblock' : 'Block'}
                         </button>
-                        {blockedUsers.includes(user.user_id) ? (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleBlockUser(user.user_id);
-                            }}
-                            className="px-2 py-1 text-sm bg-red-500 text-white rounded"
-                          >
-                            Unblock
-                          </button>
-                        ) : (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleBlockUser(user.user_id);
-                            }}
-                            className="px-2 py-1 text-sm bg-gray-500 text-white rounded"
-                          >
-                            Block
-                          </button>
-                        )}
-                      </li>
+
+                      </div>
                     )}
                   </>
                 ))}
@@ -263,7 +246,7 @@ function App() {
                       key={page}
                       aria-current={page === currentPage ? 'page' : undefined}
                       className={`${page === currentPage ? 'bg-orange-400 text-white' : 'text-gray-900'
-                        } relative z-10 hover:cursor-pointer inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400`}
+                        } mt-4 relative z-10 hover:cursor-pointer inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400`}
                       onClick={() => handlePageChange(page)}
                     >
                       {page}
