@@ -1,65 +1,40 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
-import fetchData from './api';
-
-jest.mock('./api');
+import data from './data.json';
+import '@testing-library/jest-dom'
 
 describe('App', () => {
   beforeEach(() => {
-    fetchData.mockResolvedValue({
-      items: [
-        {
-          user_id: '1',
-          profile_image: 'image1.jpg',
-          display_name: 'Joe',
-          reputation: 100,
-        },
-        {
-          user_id: '2',
-          profile_image: 'image2.jpg',
-          display_name: 'Sandy',
-          reputation: 200,
-        },
-      ],
-    });
+    jest.clearAllMocks();
   });
 
-  test('blocks/unblocks user when button is clicked', async () => {
+  test('displays users from data.json', async () => {
     render(<App />);
+
     await waitFor(() => {
-      expect(fetchData).toHaveBeenCalled();
+      expect(screen.getByText(data.items[0].display_name)).toBeInTheDocument();
+      expect(screen.getByText(data.items[1].display_name)).toBeInTheDocument();
     });
 
-    const blockButtons = screen.getAllByText('Block');
-    const initialBlockButtonCount = blockButtons.length;
+    const users = screen.getAllByTestId('user');
+    const firstUser = users[0];
+    const secondUser = users[1];
 
-    const blockButton = blockButtons[0];
-    expect(blockButton).toBeTruthy();
-
-    userEvent.click(blockButton);
+    userEvent.click(firstUser.getByText('Block'));
+    userEvent.click(secondUser.getByText('Block'));
 
     await waitFor(() => {
-      const updatedBlockButtons = screen.queryAllByText('Block');
-      const updatedUnblockButtons = screen.queryAllByText('Unblock');
-      // NOTE Expect one less block button
-      expect(updatedBlockButtons.length).toBe(initialBlockButtonCount - 1);
-      // NOTE Expect one unblock button
-      expect(updatedUnblockButtons.length).toBe(1);
+      expect(firstUser.getByText('Unblock')).toBeInTheDocument();
+      expect(secondUser.getByText('Unblock')).toBeInTheDocument();
     });
 
-    const unblockButton = screen.getByText('Unblock');
-    expect(unblockButton).toBeTruthy();
-
-    userEvent.click(unblockButton);
+    userEvent.click(firstUser.getByText('Unblock'));
+    userEvent.click(secondUser.getByText('Unblock'));
 
     await waitFor(() => {
-      const finalBlockButtons = screen.queryAllByText('Block');
-      const finalUnblockButtons = screen.queryAllByText('Unblock');
-      // NOTE Expect the initial count of block buttons
-      expect(finalBlockButtons.length).toBe(initialBlockButtonCount);
-      // NOTE Expect no unblock button
-      expect(finalUnblockButtons.length).toBe(0);
+      expect(firstUser.getByText('Block')).toBeInTheDocument();
+      expect(secondUser.getByText('Block')).toBeInTheDocument();
     });
   });
 });

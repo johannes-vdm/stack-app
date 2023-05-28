@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react';
 import jsonData from './data.json';
 
-interface User {
-  user_id: string;
-  profile_image: string;
-  display_name: string;
-  reputation: number;
-  last_access_date: number;
-  location: string;
-}
+import Search from './components/Search';
+import Pagination from './components/Pagination';
+
+import { User } from './interfaces/IUserItems';
 
 const PAGE_SIZE = 10;
 
@@ -139,20 +135,14 @@ function App() {
         <p>{error}</p>
       ) : (
         <div>
-          <input
-            type="text"
-            placeholder="Search by user name"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md mb-4 w-full"
-          />
+          <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
           {filteredUsers.length ? (
             <div>
               <ul role="list" className="divide-y divide-gray-100 border-2 rounded-lg">
                 {usersToShow.map((user: User) => (
                   <div key={user.user_id}>
                     <li
-                      className={`flex align-middle hover:bg-gray-100 hover:cursor-pointer justify-between gap-x-6 p-5  ${blockedUsers.includes(
+                      className={`flex align-middle hover:bg-blue-50 hover:cursor-pointer justify-between gap-x-6 p-5  ${blockedUsers.includes(
                         user.user_id
                       )
                         ? 'bg-gray-200 opacity-50'
@@ -233,24 +223,11 @@ function App() {
                   </div>
                 ))}
               </ul>
-              <div>
-                <nav
-                  className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-                  aria-label="Pagination"
-                >
-                  {pages.map((page) => (
-                    <a
-                      key={page}
-                      aria-current={page === currentPage ? 'page' : undefined}
-                      className={`${page === currentPage ? 'bg-orange-400 text-white' : 'text-gray-900'
-                        } mt-4 relative z-10 hover:cursor-pointer inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400`}
-                      onClick={() => handlePageChange(page)}
-                    >
-                      {page}
-                    </a>
-                  ))}
-                </nav>
-              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
             </div>
           ) : (
             <p>No users found.</p>
