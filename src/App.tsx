@@ -150,9 +150,8 @@ function App() {
             <div>
               <ul role="list" className="divide-y divide-gray-100 border-2 rounded-lg">
                 {usersToShow.map((user: User) => (
-                  <>
+                  <div key={user.user_id}>
                     <li
-                      key={user.user_id}
                       className={`flex align-middle hover:bg-gray-100 hover:cursor-pointer justify-between gap-x-6 p-5  ${blockedUsers.includes(
                         user.user_id
                       )
@@ -201,13 +200,11 @@ function App() {
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                           </svg>
-
                         }
-
                       </div>
                     </li>
                     {clickedProfileId === user.user_id && (
-                      <div className='p-10 bg-gray-500' key={`details-${user.user_id}`}>
+                      <div className='p-10 bg-gray-500' >
                         {!blockedUsers.includes(user.user_id) && (
                           <button
                             onClick={(e) => {
@@ -233,7 +230,7 @@ function App() {
 
                       </div>
                     )}
-                  </>
+                  </div>
                 ))}
               </ul>
               <div>
