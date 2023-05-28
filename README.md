@@ -43,7 +43,7 @@ Key Requirements: Your solution must meet the following requirements:
 - [x] A readme.md in the root of the project with clear instructions on installing and running the application.
 
 - [x] Use react 17 >
-- [ ] Provide some baseline unit tests
+- [x] Provide some baseline unit tests
 Any additional documentation where you believe is required for the application.
 - [x] If your project is web-based, please ensure that it is responsive
 
