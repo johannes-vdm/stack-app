@@ -1,4 +1,5 @@
 # Stack App
+`Please note that rate limiting takes place using the api and the data has been saved on data.json`
 
 ## Run using 
 
@@ -7,6 +8,11 @@
 ```npm install```
 
 ```npm run dev```
+
+```npm run test```
+
+
+
 
 ### Issues encountered:
 Rate limiting (bypassed using data.json), should really be provided using a proxy in the backend. 
