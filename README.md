@@ -48,11 +48,11 @@ Any additional documentation where you believe is required for the application.
 - [x] If your project is web-based, please ensure that it is responsive
 
 Please indicate roughly how much time you spent on this challenge in the following categories: (this doesn’t have to be accurate, rough estimations are fine) 
-- Review
-- Design
-- Implementation
-- Testing
-- Documentation
+- Review - 15 minutes
+- Design - 1 Hour
+- Implementation - 3 Hours
+- Testing - 20 minutes
+- Documentation - 5 minutes
 
 Optional Bonus Points
 
