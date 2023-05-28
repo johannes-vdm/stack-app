@@ -61,3 +61,4 @@ Optional Bonus Points
 - [x] Implement a caching strategy.
 - [x] Add paging
 Other Information:
+- [x] Added last seen
